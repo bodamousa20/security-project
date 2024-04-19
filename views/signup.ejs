@@ -1,0 +1,67 @@
+<%- include('partials/header'); -%>
+
+
+<form >
+  <h2>signup</h2>
+ 
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+    <div class="emailerr"></div>
+  
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    <div class="passworderr"></div>
+    <button>Login</button>
+    <div class="created"></div>
+
+</form>
+  <script>
+    const form = document.querySelector('form');
+    
+form.addEventListener('submit',async (e)=>{
+  e.preventDefault();
+  const email = document.querySelector('#email').value;
+    const password = document.querySelector('#password').value;
+    const email_error = document.querySelector('.emailerr');
+    const password_error = document.querySelector('.passworderr');
+    const createalert = document.querySelector('.created')
+
+    try{
+        const result = await fetch('/signup',{
+          method :'POST',
+          body :JSON.stringify({  email ,password  }),
+          headers :{'Content-Type':'application/json'}
+
+        })
+        const data = await result.json();
+        console.log(data);
+        if (data.error) {
+        if (data.error.email) {
+            email_error.textContent = data.error.email;
+        } else {
+            email_error.textContent = '';
+        }
+        if (data.error.password) {
+            password_error.textContent = data.error.password;
+        } else {
+            password_error.textContent = '';
+        }
+    } else {
+        email_error.textContent = '';
+        password_error.textContent = '';
+        alert("User Created Sucessfully")
+
+      }
+    if(data.user){ 
+      location.assign('/')
+    }
+
+    }
+    catch(err){
+      console.log(err);
+    }
+});
+
+
+  </script>
+  <%- include('partials/footer'); -%>
